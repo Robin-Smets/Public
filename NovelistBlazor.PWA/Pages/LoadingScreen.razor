@@ -1,0 +1,27 @@
+﻿@page "/"
+
+@using NovelistBlazor.Common
+@using NovelistBlazor.Common.Service
+
+@inject NovelistViewModel ViewModel
+
+<!-- MarkUp -->
+@if (!ViewModel.Initialized)
+{
+    <NavLink href="Loading">
+        Loading novels...
+    </NavLink>
+}
+else
+{
+   <Home/>
+
+}
+
+@code 
+{
+    protected override async Task OnInitializedAsync()
+    {
+        await ViewModel.InitializeAsync();
+    }
+}

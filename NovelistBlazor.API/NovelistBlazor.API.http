@@ -1,0 +1,29 @@
+@NovelistBlazor.API_HostAddress = https://localhost:7173
+
+GET {{NovelistBlazor.API_HostAddress}}/Novel/
+Accept: application/json
+
+###
+
+POST {{NovelistBlazor.API_HostAddress}}/Novel/
+Content-Type: application/json
+
+{
+  "EntityName": "Novel",
+  "Data": {
+    "Id": "0",
+    "Name": "Default Name",
+    "Description": "Default Description",
+    "Abstract": "Default Abstract"
+  },
+  "DefaultData": {
+    "Id": "0",
+    "Name": "Default Name",
+    "Description": "Default Description",
+    "Abstract": "Default Abstract"
+  },
+  "PlotUnits": [],
+  "Characters": []
+}
+
+###

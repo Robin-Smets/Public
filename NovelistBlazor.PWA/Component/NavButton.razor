@@ -1,0 +1,17 @@
+﻿@inherits ComponentBase
+
+<li>
+    <a href="@Href" class="text-gray-400 hover:text-white hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+        @ChildContent
+        @Text
+    </a>
+</li>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public string Text { get; set; }
+    [Parameter]
+    public string Href { get; set; }
+}

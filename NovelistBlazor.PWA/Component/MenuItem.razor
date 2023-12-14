@@ -1,0 +1,21 @@
+﻿@using NovelistBlazor.PWA.Component
+@using Microsoft.AspNetCore.Components
+
+@inherits ComponentBase
+
+<button type="button" class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500" @onclick="OnClick">
+    <div class="flex flex-row">
+        @ChildContent
+        @Text
+    </div>
+</button>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public string Text { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+}

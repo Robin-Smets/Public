@@ -1,0 +1,65 @@
+﻿@inject NovelistViewModel ViewModel
+
+@using NovelistBlazor.Common.DTO
+@using NovelistBlazor.Common
+
+
+<select @onchange="OnSelectionChanged">
+    @if (Type == DTOType.Novel)
+    {
+        if (ViewModel.AllNovels?.Count() > 0)
+        {
+            @foreach (var novel in ViewModel.AllNovels)
+            {
+                <option value="@novel.Id">@novel.Id - @novel.Name</option>
+            }             
+        } 
+    }
+    else if (Type == DTOType.Character)
+    {
+        if (ViewModel.AllCurrentCharacters?.Count() > 0)
+        {
+            @foreach (var character in ViewModel.AllCurrentCharacters)
+            {
+                <option value="@character.Id">@character.Id - @character.Name</option>
+            }
+        }
+    }
+    else if (Type == DTOType.PlotUnit)
+    {
+        if (ViewModel.AllCurrentPlotUnits?.Count()>0)
+        {
+            @foreach (var plotUnit in ViewModel.AllCurrentPlotUnits)
+            {
+                <option value="@plotUnit.Id">@plotUnit.Id - @plotUnit.Title</option>
+            }            
+        }
+    }
+</select>
+
+@code
+{
+    [Parameter]
+    public DTOType Type { get; set; }
+
+    private async Task OnSelectionChanged(ChangeEventArgs e)
+    {
+        int id = Convert.ToInt32(e.Value.ToString());
+        ViewModel.OnComboBoxChanged(Type, id);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ViewModel.OnDataChanged += RefreshState;
+    }
+
+    private void RefreshState()
+    {
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        ViewModel.OnDataChanged -= RefreshState; // Detach the event when the component is disposed
+    }
+}

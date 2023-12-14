@@ -1,0 +1,114 @@
+﻿@using NovelistBlazor.Common.Interface;
+@using NovelistBlazor.Common;
+@using NovelistBlazor.Common.Service;
+
+<div class="px-4 sm:px-6 lg:px-8">
+    <div class="mt-8 flow-root">
+        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                @if (DTOType == DTOType.Novel)
+                                {
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Id</th>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Description</th>
+                                }
+                                else if (DTOType == DTOType.Character)
+                                {
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Id</th>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">RoleInStory</th>
+                                }
+                                else if (DTOType == DTOType.PlotUnit)
+                                {
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Id</th>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Title</th>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Description</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white">
+
+                            @if (DTOType == DTOType.Novel)
+                            {
+                                if (ViewModel.AllNovels != null)
+                                {
+                                    @foreach (var novel in ViewModel.AllNovels)
+                                    {
+                                        <tr>
+                                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">@novel.Id</td>
+                                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">@novel.Name</td>
+                                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">@novel.Description</td>
+                                        </tr>
+                                    }                                    
+                                }
+
+                            }
+                            else if (DTOType == DTOType.Character)
+                            {
+                                if (ViewModel.AllCurrentCharacters != null)
+                                {
+                                    @foreach (var novel in ViewModel.AllCurrentCharacters)
+                                    {
+                                        <tr>
+                                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">@novel.Id</td>
+                                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">@novel.Name</td>
+                                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">@novel.RoleInStory</td>
+                                        </tr>
+                                    }                                    
+                                }
+
+                            }
+                            else if (DTOType == DTOType.PlotUnit)
+                            {
+                                if (ViewModel.AllCurrentPlotUnits != null)
+                                {
+                                 @foreach (var novel in ViewModel.AllCurrentPlotUnits)
+                                    {
+                                        <tr>
+                                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">@novel.Id</td>
+                                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">@novel.Title</td>
+                                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">@novel.Description</td>
+                                        </tr>
+                                    }                                   
+                                }
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@inject NovelistViewModel ViewModel
+
+@code
+{
+    [Parameter]
+    public DTOType DTOType { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ManipulateData();
+    }
+
+    private void ManipulateData()
+    {
+        // Your data manipulation logic goes here
+        // For example, you could modify, add or remove items from the Data list
+    }
+
+     /*
+     * Remember that manipulating data in these lifecycle methods will only affect the initial rendering
+     * of the component. If the Data parameter changes due to external factors (like parent component updates),
+     * you may need to handle updates using the OnParametersSet or OnParametersSetAsync lifecycle methods, which
+     * are called every time the component receives new parameters.
+    */
+}

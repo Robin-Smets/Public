@@ -1,0 +1,63 @@
+﻿@page "/novel"
+
+@using NovelistBlazor.Common
+@using NovelistBlazor.PWA.Component
+
+@inject NovelistViewModel ViewModel
+
+@implements IDisposable
+
+<PageTitle>Novelist - Novel</PageTitle>
+
+<Container Title="Novel">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Name</label>
+        <InputText id="name" @bind-Value="ViewModel.CurrentNovel.Name" />
+        <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="description">Description</label>
+            <EditForm Model="@ViewModel.CurrentNovel">
+                <InputTextArea id="description" @bind-Value="ViewModel.CurrentNovel.Description" />
+            </EditForm>
+        </div>
+
+        <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="abstract">Abstract</label>
+            <EditForm Model="@ViewModel.CurrentNovel">
+                <InputTextArea id="abstract" @bind-Value="ViewModel.CurrentNovel.Abstract" />
+            </EditForm>
+        </div>
+    </div>
+</Container>
+<Container Title="Plot-Units">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+        <Table DTOType="@DTOType.PlotUnit" />
+    </div>
+</Container>
+<Container Title="Characters">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+        <Table DTOType="@DTOType.Character" />
+    </div>
+</Container>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        ViewModel.OnDataChanged += RefreshState;
+    }
+
+    private void RefreshState()
+    {
+        if (ViewModel.CurrentNovel == null)
+        {
+            
+        }
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        ViewModel.OnDataChanged -= RefreshState; // Detach the event when the component is disposed
+    }
+
+}

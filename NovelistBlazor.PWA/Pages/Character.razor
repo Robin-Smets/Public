@@ -1,0 +1,60 @@
+﻿@page "/character"
+
+@using NovelistBlazor.Common
+
+@using NovelistBlazor.PWA.Component
+@inject NovelistViewModel ViewModel
+
+<PageTitle>Novelist - Character</PageTitle>
+
+<Container Title="Character">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Name</label>
+        <InputText id="name" @bind-Value="ViewModel.CurrentCharacter.Name" />
+        <!--
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="age">Age</label>
+        <InputText id="age" @bind-Value="ViewModel.CurrentCharacter.Age" />-->
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="occupation">Occupation</label>
+        <InputText id="occupation" @bind-Value="ViewModel.CurrentCharacter.Occupation" />
+        <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="roleInStory">RoleInStory</label>
+            <EditForm Model="@ViewModel.CurrentCharacter">
+                <InputTextArea id="roleInStory" @bind-Value="ViewModel.CurrentCharacter.RoleInStory" />
+            </EditForm>
+        </div>
+        <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="physicalDescription">PhysicalDescription</label>
+            <EditForm Model="@ViewModel.CurrentCharacter">
+                <InputTextArea id="physicalDescription" @bind-Value="ViewModel.CurrentCharacter.PhysicalDescription" />
+            </EditForm>
+        </div>
+        <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="personalityTraits">PersonalityTraits</label>
+            <EditForm Model="@ViewModel.CurrentCharacter">
+                <InputTextArea id="personalityTraits" @bind-Value="ViewModel.CurrentCharacter.PersonalityTraits" />
+            </EditForm>
+        </div>
+        <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="background">Background</label>
+            <EditForm Model="@ViewModel.CurrentCharacter">
+                <InputTextArea id="background" @bind-Value="ViewModel.CurrentCharacter.Background" />
+            </EditForm>
+        </div>
+        <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="goalsAndMotivations">GoalsAndMotivations</label>
+            <EditForm Model="@ViewModel.CurrentCharacter">
+                <InputTextArea id="goalsAndMotivations" @bind-Value="ViewModel.CurrentCharacter.GoalsAndMotivations" />
+            </EditForm>
+        </div>
+        <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="characterArc">CharacterArc</label>
+            <EditForm Model="@ViewModel.CurrentCharacter">
+                <InputTextArea id="characterArc" @bind-Value="ViewModel.CurrentCharacter.CharacterArc" />
+            </EditForm>
+        </div>
+    </div>
+</Container>
+
+@code {
+
+}
