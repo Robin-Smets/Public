@@ -1,29 +1,29 @@
 ﻿@page "/novel"
 
 @using NovelistBlazor.Common
+@using NovelistBlazor.Common.Service
 @using NovelistBlazor.PWA.Component
-
-@inject NovelistViewModel ViewModel
 
 @implements IDisposable
 
-<PageTitle>Novelist - Novel</PageTitle>
+@inject Repository _repository
 
+<PageTitle>Novelist - Novel</PageTitle>
 <Container Title="Novel">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Name</label>
-        <InputText id="name" @bind-Value="ViewModel.CurrentNovel.Name" />
+        <InputText id="name" @bind-Value="_repository.CurrentNovel.Name" />
         <div>
             <label class="block text-gray-700 text-sm font-bold mb-2" for="description">Description</label>
-            <EditForm Model="@ViewModel.CurrentNovel">
-                <InputTextArea id="description" @bind-Value="ViewModel.CurrentNovel.Description" />
+            <EditForm Model="@_repository.CurrentNovel">
+                <InputTextArea id="description" @bind-Value="_repository.CurrentNovel.Description" />
             </EditForm>
         </div>
 
         <div>
             <label class="block text-gray-700 text-sm font-bold mb-2" for="abstract">Abstract</label>
-            <EditForm Model="@ViewModel.CurrentNovel">
-                <InputTextArea id="abstract" @bind-Value="ViewModel.CurrentNovel.Abstract" />
+            <EditForm Model="@_repository.CurrentNovel">
+                <InputTextArea id="abstract" @bind-Value="_repository.CurrentNovel.Abstract" />
             </EditForm>
         </div>
     </div>
@@ -43,21 +43,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ViewModel.OnDataChanged += RefreshState;
-    }
 
-    private void RefreshState()
-    {
-        if (ViewModel.CurrentNovel == null)
-        {
-            
-        }
-        StateHasChanged();
     }
 
     public void Dispose()
     {
-        ViewModel.OnDataChanged -= RefreshState; // Detach the event when the component is disposed
+
     }
 
 }

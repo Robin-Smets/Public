@@ -2,6 +2,8 @@
 @using NovelistBlazor.Common;
 @using NovelistBlazor.Common.Service;
 
+@inject Repository _repository
+
 <div class="px-4 sm:px-6 lg:px-8">
     <div class="mt-8 flow-root">
         <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -34,9 +36,9 @@
 
                             @if (DTOType == DTOType.Novel)
                             {
-                                if (ViewModel.AllNovels != null)
+                                if (_repository.AllNovels != null)
                                 {
-                                    @foreach (var novel in ViewModel.AllNovels)
+                                    @foreach (var novel in _repository.AllNovels)
                                     {
                                         <tr>
                                             <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">@novel.Id</td>
@@ -49,9 +51,9 @@
                             }
                             else if (DTOType == DTOType.Character)
                             {
-                                if (ViewModel.AllCurrentCharacters != null)
+                                if (_repository.AllCurrentCharacters != null)
                                 {
-                                    @foreach (var novel in ViewModel.AllCurrentCharacters)
+                                    @foreach (var novel in _repository.AllCurrentCharacters)
                                     {
                                         <tr>
                                             <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">@novel.Id</td>
@@ -64,9 +66,9 @@
                             }
                             else if (DTOType == DTOType.PlotUnit)
                             {
-                                if (ViewModel.AllCurrentPlotUnits != null)
+                                if (_repository.AllCurrentPlotUnits != null)
                                 {
-                                 @foreach (var novel in ViewModel.AllCurrentPlotUnits)
+                                    @foreach (var novel in _repository.AllCurrentPlotUnits)
                                     {
                                         <tr>
                                             <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">@novel.Id</td>
@@ -84,8 +86,6 @@
         </div>
     </div>
 </div>
-
-@inject NovelistViewModel ViewModel
 
 @code
 {

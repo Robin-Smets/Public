@@ -3,12 +3,8 @@
 @using NovelistBlazor.Common
 
 @inherits LayoutComponentBase
-@implements IDisposable
-@inject NovelistViewModel ViewModel
-@inject NavigationManager NavigationManager
 
 <div>
- 
     <!-- Static sidebar for desktop -->
     <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
         <!-- Sidebar component, swap this element with another sidebar if you like -->
@@ -18,14 +14,13 @@
                 <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company">
             </div>
             -->
-            <SideBar />
+            <SideBar/>
         </div>
     </div>
 
     <div class="lg:pl-72">
 
-        <TopRow >
-        </TopRow >
+        <TopRow/>
 
         <main class="py-10">
             <div class="px-4 sm:px-6 lg:px-8">
@@ -37,20 +32,6 @@
 </div>
 
 @code{
-    protected override async Task OnInitializedAsync()
-    {
-        ViewModel.NavigationManager = NavigationManager;
-        ViewModel.OnDataChanged += RefreshState;
-    }
 
-    private void RefreshState()
-    {
-        StateHasChanged();
-    }
-
-    public void Dispose()
-    {
-        ViewModel.OnDataChanged -= RefreshState; // Detach the event when the component is disposed
-    }
 
 }

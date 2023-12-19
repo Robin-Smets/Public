@@ -14,63 +14,27 @@ namespace NovelistBlazor.Common.Service
     {
         #region Properties & members
 
-        private NovelDTO _currentNovel;
-        public NovelDTO CurrentNovel 
-        { 
-            get => _currentNovel; 
-            set
-            {
-                if (_currentNovel != value)
-                {
-                    _currentNovel = value;
-                    RepositoryEventMediator.OnCurrentNovelChanged(_currentNovel);
-                }
-            }
-        }
-        
-        private List<NovelDTO> _avaiableNovels;
-        public List<NovelDTO> AvaiableNovels 
-        { 
-            get => _avaiableNovels; 
-            set
-            {
-                if (_avaiableNovels != value)
-                {
-                    _avaiableNovels = value;
-                    RepositoryEventMediator.OnAvaiableNovelsChanged(_avaiableNovels);
-                }
-            }
-        }
-
         #endregion
 
         #region Constructor
 
-        public NovelRepository(IHttpClientFactory httpClient, ResponseDeserializer responseDeserializer, RepositoryEventMediator repositoryEventMediator) : base(httpClient, responseDeserializer, repositoryEventMediator)
+        public NovelRepository(IHttpClientFactory httpClient, ResponseDeserializer responseDeserializer, EventMediator repositoryEventMediator) : base(httpClient, responseDeserializer, repositoryEventMediator)
         {
-            _currentNovel = new NovelDTO();
-            _avaiableNovels = new List<NovelDTO>(); 
+
         }
 
         #endregion
 
         #region Methods
 
-        public async Task Initialize()
-        {
-            await LoadNovelsAsync();
-            CurrentNovel = AvaiableNovels.FirstOrDefault();
-        }
-
         #endregion
 
-        public async Task NewNovelAsync()
+        public async Task<HttpResponseMessage> NewNovelAsync()
         {
-                var novel = new NovelDTO();
-                novel.Name = "New novel";
-                await SaveNovelAsync(novel);
-                await LoadNovelsAsync();
-                CurrentNovel = AvaiableNovels.OrderByDescending(x => x.Id).First();
+            var novel = new NovelDTO();
+            novel.Name = "New novel";
+            await SaveNovelAsync(novel);
+            return await LoadNovelsAsync();
         }
 
         public async Task<HttpResponseMessage> SaveNovelAsync(NovelDTO novelDTO)
@@ -89,9 +53,9 @@ namespace NovelistBlazor.Common.Service
             return await SendRequest(HttpClient, request);
         }
 
-        public async Task<HttpResponseMessage> DeleteNovelAsync()
+        public async Task<HttpResponseMessage> DeleteNovelAsync(int id)
         {
-            var request = new HttpRequestMessage(HttpMethod.Delete, $"https://localhost:7173/Novel/{CurrentNovel.Id}")
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"https://localhost:7173/Novel/{id}")
             {
                 Method = HttpMethod.Delete,
             };
@@ -112,22 +76,18 @@ namespace NovelistBlazor.Common.Service
 
             var response = await SendRequest(HttpClient, request);
 
-            var novels = await ResponseDeserializer.DeserializeNovelDTOsAsync(response);
-
-            AvaiableNovels = novels;
-
             return response;
         }
 
 
-        public async Task<HttpResponseMessage> UpdateNovelAsync()
+        public async Task<HttpResponseMessage> UpdateNovelAsync(NovelDTO novel)
         {
             var novelData = new
             {
-                Id = CurrentNovel.Id,
-                Name = CurrentNovel.Name,
-                Description = CurrentNovel.Description,
-                Abstract = CurrentNovel.Abstract
+                Id = novel.Id,
+                Name = novel.Name,
+                Description = novel.Description,
+                Abstract = novel.Abstract
             };
 
             var jsonNovelData = JsonConvert.SerializeObject(novelData);

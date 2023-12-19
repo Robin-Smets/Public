@@ -33,14 +33,15 @@ builder.Services.AddSingleton(_ => mapper);
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddSingleton<RepositoryEventMediator>();
+builder.Services.AddSingleton<AppState>();
+builder.Services.AddSingleton<PageAnalyzer>();
+builder.Services.AddSingleton<EventMediator>();
 builder.Services.AddSingleton<DataFactory>();
 builder.Services.AddSingleton<ResponseDeserializer>();
+
 builder.Services.AddSingleton<Repository>();
 builder.Services.AddSingleton<NovelRepository>();
 builder.Services.AddSingleton<CharacterRepository>();
 builder.Services.AddSingleton<PlotUnitRepository>();
-
-builder.Services.AddScoped<NovelistViewModel>();
 
 await builder.Build().RunAsync();

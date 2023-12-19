@@ -1,25 +1,28 @@
-﻿@inject NovelistViewModel ViewModel
-
-@using NovelistBlazor.Common.DTO
+﻿@using NovelistBlazor.Common.DTO
+@using NovelistBlazor.Common.Service
 @using NovelistBlazor.Common
 
+@implements IDisposable
+
+@inject Repository _repository
+@inject EventMediator _eventMediator;
 
 <select @onchange="OnSelectionChanged">
     @if (Type == DTOType.Novel)
     {
-        if (ViewModel.AllNovels?.Count() > 0)
+        if (_repository.AllNovels?.Count() > 0)
         {
-            @foreach (var novel in ViewModel.AllNovels)
+            @foreach (var novel in _repository.AllNovels)
             {
-                <option value="@novel.Id">@novel.Id - @novel.Name</option>
+                <option value="@novel.Id" selected="@(selectedId == novel.Id)">@novel.Id - @novel.Name</option>
             }             
         } 
     }
     else if (Type == DTOType.Character)
     {
-        if (ViewModel.AllCurrentCharacters?.Count() > 0)
+        if (_repository.AllCurrentCharacters?.Count() > 0)
         {
-            @foreach (var character in ViewModel.AllCurrentCharacters)
+            @foreach (var character in _repository.AllCurrentCharacters)
             {
                 <option value="@character.Id">@character.Id - @character.Name</option>
             }
@@ -27,9 +30,9 @@
     }
     else if (Type == DTOType.PlotUnit)
     {
-        if (ViewModel.AllCurrentPlotUnits?.Count()>0)
+        if (_repository.AllCurrentPlotUnits?.Count() > 0)
         {
-            @foreach (var plotUnit in ViewModel.AllCurrentPlotUnits)
+            @foreach (var plotUnit in _repository.AllCurrentPlotUnits)
             {
                 <option value="@plotUnit.Id">@plotUnit.Id - @plotUnit.Title</option>
             }            
@@ -42,24 +45,33 @@
     [Parameter]
     public DTOType Type { get; set; }
 
+    private int selectedId;
+
     private async Task OnSelectionChanged(ChangeEventArgs e)
     {
-        int id = Convert.ToInt32(e.Value.ToString());
-        ViewModel.OnComboBoxChanged(Type, id);
+        selectedId = Convert.ToInt32(e.Value.ToString());
+
+        if (Type == DTOType.Novel)
+        {
+            await _repository.LoadNovelAsync(selectedId);
+        }
+
     }
 
-    protected override async Task OnInitializedAsync()
+    private void UpdateAsync()
     {
-        ViewModel.OnDataChanged += RefreshState;
-    }
-
-    private void RefreshState()
-    {
+        selectedId = _repository.CurrentNovel?.Id ?? 0;
         StateHasChanged();
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _eventMediator.OnRepositoryDataChanged += UpdateAsync;
     }
 
     public void Dispose()
     {
-        ViewModel.OnDataChanged -= RefreshState; // Detach the event when the component is disposed
+        _eventMediator.OnRepositoryDataChanged -= UpdateAsync;
     }
 }

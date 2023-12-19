@@ -11,9 +11,9 @@ namespace NovelistBlazor.Common.Base
     {
         public HttpClient HttpClient { get; set;}
         public ResponseDeserializer ResponseDeserializer { get; set;}
-        public RepositoryEventMediator RepositoryEventMediator { get; set;} 
+        public EventMediator RepositoryEventMediator { get; set;} 
 
-        public RepositoryBase(IHttpClientFactory httpClient, ResponseDeserializer responseDeserializer, RepositoryEventMediator repositoryEventMediator)
+        public RepositoryBase(IHttpClientFactory httpClient, ResponseDeserializer responseDeserializer, EventMediator repositoryEventMediator)
         {
             HttpClient = httpClient.CreateClient();
             ResponseDeserializer = responseDeserializer;

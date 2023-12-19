@@ -21,7 +21,6 @@ namespace NovelistBlazor.Common.Service
                 if (_currentCharacter != value)
                 {
                     _currentCharacter = value;
-                    RepositoryEventMediator.OnCurrentCharacterChanged(_currentCharacter);
                 }
             }
         }
@@ -35,12 +34,11 @@ namespace NovelistBlazor.Common.Service
                 if (_allCurrentCharacters != value)
                 {
                     _allCurrentCharacters = value;
-                    RepositoryEventMediator.OnAllCurrentCharactersChanged(_allCurrentCharacters);
                 }
             }
         }
 
-        public CharacterRepository(IHttpClientFactory httpClient, ResponseDeserializer responseDeserializer, RepositoryEventMediator repositoryEventMediator) : base(httpClient, responseDeserializer, repositoryEventMediator)
+        public CharacterRepository(IHttpClientFactory httpClient, ResponseDeserializer responseDeserializer, EventMediator repositoryEventMediator) : base(httpClient, responseDeserializer, repositoryEventMediator)
         {
             _currentCharacter = new CharacterDTO();
             _allCurrentCharacters = new List<CharacterDTO>(); 

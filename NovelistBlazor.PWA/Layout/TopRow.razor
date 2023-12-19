@@ -2,68 +2,66 @@
 @using NovelistBlazor.PWA.Component.Svg
 @using NovelistBlazor.Common
 @using NovelistBlazor.Common.DTO
-@implements IDisposable
-
-<div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-
-    <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-        <div class="flex justify-between flex-1 items-center">
-            <MenuItem Text="New" OnClick="ViewModel.OnNew">
-                <PlusDocumentIcon />
-            </MenuItem>
-            <Seperator />
-            <MenuItem Text="Save" OnClick="ViewModel.OnSave">
-                <ArchiveBoxIcon />
-            </MenuItem>
-            <Seperator />
-            <MenuItem Text="Delete" OnClick="ViewModel.OnDelete">
-                <TrashCanIcon />
-            </MenuItem>
-            <Seperator />
-            <!--
-            <MenuItem Text="Export" OnClick="ViewModel.OnExport">
-                <PrinterIcon />
-            </MenuItem>
-            <Seperator />
-            -->
-        </div>
-        <ComboBox Type="@DTOType.Novel"/>
-        <!--
-        <div class="flex items-center gap-x-4 lg:gap-x-6">
-            <Seperator />
-            <MenuItem OnClick="ViewModel.OnMinimize">
-                <MinusIcon  />
-            </MenuItem>
-            <MenuItem OnClick="ViewModel.OnExpand">
-                <ExpandIcon />
-            </MenuItem>
-            <MenuItem OnClick="ViewModel.OnExit">
-                <XIcon />
-            </MenuItem>
-        </div>
-        -->
-    </div>
-</div>
+@using NovelistBlazor.Common.Service
 
 @inherits ComponentBase
+@implements IDisposable
 
-@inject NovelistViewModel ViewModel
+@inject Repository _repository
+@inject AppState _appState
+@inject EventMediator _eventMediator
+
+<div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+    <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+            <div class="flex justify-between flex-1 items-center">
+            
+                <MenuItem Text="New" OnClick="_repository.NewAsync">
+                    <PlusDocumentIcon />
+                </MenuItem>
+                <Seperator />
+                <MenuItem Text="Save" OnClick="_repository.SaveAsync">
+                    <ArchiveBoxIcon />
+                </MenuItem>
+                <Seperator />
+                <MenuItem Text="Delete" OnClick="_repository.DeleteAsync">
+                    <TrashCanIcon />
+                </MenuItem>
+                <Seperator />
+                <!--
+                <MenuItem Text="Export" OnClick="ViewModel.OnExport">
+                    <PrinterIcon />
+                </MenuItem>
+                <Seperator />
+                -->
+            </div>
+            <ComboBox Type="@DTOType.Novel"/>
+            <!--
+            <div class="flex items-center gap-x-4 lg:gap-x-6">
+                <Seperator />
+                <MenuItem OnClick="ViewModel.OnMinimize">
+                    <MinusIcon  />
+                </MenuItem>
+                <MenuItem OnClick="ViewModel.OnExpand">
+                    <ExpandIcon />
+                </MenuItem>
+                <MenuItem OnClick="ViewModel.OnExit">
+                    <XIcon />
+                </MenuItem>
+            </div>
+            -->
+    </div>
+</div>
 
 @code {
 
     protected override async Task OnInitializedAsync()
     {
-        ViewModel.OnDataChanged += RefreshState;
-    }
-
-    private void RefreshState()
-    {
-        StateHasChanged();
+        _eventMediator.OnAppStateChanged += StateHasChanged;
     }
 
     public void Dispose()
     {
-        ViewModel.OnDataChanged -= RefreshState; // Detach the event when the component is disposed
+        _eventMediator.OnAppStateChanged -= StateHasChanged;
     }
 
 }

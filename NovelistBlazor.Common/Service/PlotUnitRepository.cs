@@ -22,7 +22,6 @@ namespace NovelistBlazor.Common.Service
                 if (_currentPlotUnit != value)
                 {
                     _currentPlotUnit = value;
-                    RepositoryEventMediator.OnCurrentPlotUnitChanged(_currentPlotUnit);
                 }
             }
         }
@@ -36,12 +35,11 @@ namespace NovelistBlazor.Common.Service
                 if (_allCurrentPlotUnits != value)
                 {
                     _allCurrentPlotUnits = value;
-                    RepositoryEventMediator.OnAllCurrentPlotUnitsChanged(_allCurrentPlotUnits);
                 }
             }
         }
 
-        public PlotUnitRepository(IHttpClientFactory httpClient, ResponseDeserializer responseDeserializer, RepositoryEventMediator repositoryEventMediator) : base(httpClient, responseDeserializer, repositoryEventMediator)
+        public PlotUnitRepository(IHttpClientFactory httpClient, ResponseDeserializer responseDeserializer, EventMediator repositoryEventMediator) : base(httpClient, responseDeserializer, repositoryEventMediator)
         {
             _currentPlotUnit = new PlotUnitDTO();
             _allCurrentPlotUnits = new List<PlotUnitDTO>(); 
