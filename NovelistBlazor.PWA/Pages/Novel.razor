@@ -1,54 +1,127 @@
 ﻿@page "/novel"
 
 @using NovelistBlazor.Common
+@using NovelistBlazor.Common.DTO
 @using NovelistBlazor.Common.Service
+@using NovelistBlazor.Common.Interface
 @using NovelistBlazor.PWA.Component
 
+@namespace NovelistBlazor.PWA.Page
+@inherits ComponentBase
 @implements IDisposable
+@implements IDataComponent
 
+@inject EventMediator _eventMediator
 @inject Repository _repository
 
 <PageTitle>Novelist - Novel</PageTitle>
 <Container Title="Novel">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Name</label>
-        <InputText id="name" @bind-Value="_repository.CurrentNovel.Name" />
+    <div>
+        <label for="name">Name</label>
+        <InputText id="name" @bind-Value="NovelName" />
         <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="description">Description</label>
-            <EditForm Model="@_repository.CurrentNovel">
-                <InputTextArea id="description" @bind-Value="_repository.CurrentNovel.Description" />
-            </EditForm>
+            <label for="description">Description</label>
+            <InputTextArea id="description" @bind-Value="NovelDescription" />
         </div>
 
         <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="abstract">Abstract</label>
-            <EditForm Model="@_repository.CurrentNovel">
-                <InputTextArea id="abstract" @bind-Value="_repository.CurrentNovel.Abstract" />
-            </EditForm>
+            <label for="abstract">Abstract</label>
+            <InputTextArea id="abstract" @bind-Value="NovelAbstract" />
         </div>
     </div>
 </Container>
 <Container Title="Plot-Units">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+    <div >
         <Table DTOType="@DTOType.PlotUnit" />
     </div>
 </Container>
 <Container Title="Characters">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+    <div>
         <Table DTOType="@DTOType.Character" />
     </div>
 </Container>
 
 @code {
+    private string _novelName;
+    protected string NovelName
+    {
+        get
+        {
+            return _novelName;
+        }
+        set
+        {
+            _novelName = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Novel, GetComponentData());
+        }
+    }
+
+    private string _novelDescription;
+    protected string NovelDescription
+    {
+        get
+        {
+            return _novelDescription;
+        }
+        set
+        {
+            _novelDescription = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Novel, GetComponentData());
+        }
+    }
+
+    private string _novelAbstract;
+    protected string NovelAbstract
+    {
+        get
+        {
+            return _novelAbstract;
+        }
+        set
+        {
+            _novelAbstract = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Novel, GetComponentData());
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
+        _eventMediator.OnRepositoryDataChanged += UpdateComponent;
+    }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        UpdateComponent(_repository);
+    }
+
+    private void UpdateComponent(Repository repository)
+    {
+        _novelName = "";
+        _novelDescription = "";
+        _novelAbstract = "";
+
+        if (repository.CurrentNovel != null)
+        {
+            _novelName = repository.CurrentNovel.Name;
+            _novelDescription = repository.CurrentNovel.Description;
+            _novelAbstract = repository.CurrentNovel.Abstract;
+        }
+
+        StateHasChanged();
+    }
+
+    public Dictionary<string, string> GetComponentData()
+    {
+        return new Dictionary<string, string>
+        {
+            { "NovelName" , _novelName },
+            { "NovelDescription" , _novelDescription },
+            { "NovelAbstract" , _novelAbstract }
+        };
     }
 
     public void Dispose()
     {
-
+        _eventMediator.OnRepositoryDataChanged -= UpdateComponent;
     }
-
 }

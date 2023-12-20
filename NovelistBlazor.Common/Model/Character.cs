@@ -34,7 +34,6 @@ namespace NovelistBlazor.Common.Model
             CharacterArc = "Default CharacterArc";
 
             NovelId = 0;
-            Novel = new Novel();
         }
     }
 }

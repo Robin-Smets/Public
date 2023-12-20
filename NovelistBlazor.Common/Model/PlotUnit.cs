@@ -26,9 +26,7 @@ namespace NovelistBlazor.Common.Model
             Location = "Default Location";
 
             PlotUnitTypeId = 0;
-            PlotUnitType = new PlotUnitType();
-            NovelId = 0;
-            Novel = new Novel();    
+            NovelId = 0;  
         }
     }
 }

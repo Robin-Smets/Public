@@ -48,6 +48,8 @@ namespace NovelistBlazor.API.Controllers
         public async Task<ActionResult<PlotUnitDTO>> PostPlotUnit(PlotUnitDTO plotUnitDTO)
         {
             var plotUnit = _dataFactory.CreateEntity<PlotUnit, PlotUnitDTO>(plotUnitDTO);
+            plotUnit.NovelId = plotUnitDTO.NovelId;
+            plotUnit.PlotUnitTypeId = plotUnitDTO.PlotUnitTypeId;
             _context.Set<PlotUnit>().Add(plotUnit);
             await _context.SaveChangesAsync();
 

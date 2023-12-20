@@ -14,11 +14,13 @@ namespace NovelistBlazor.Common.Service
     {
         #region Properties & members
 
+
+
         #endregion
 
         #region Constructor
 
-        public NovelRepository(IHttpClientFactory httpClient, ResponseDeserializer responseDeserializer, EventMediator repositoryEventMediator) : base(httpClient, responseDeserializer, repositoryEventMediator)
+        public NovelRepository(IHttpClientFactory httpClient, ResponseDeserializer responseDeserializer, EventMediator repositoryEventMediator, DataFactory dataFactory) : base(httpClient, responseDeserializer, repositoryEventMediator, dataFactory)
         {
 
         }
@@ -31,7 +33,7 @@ namespace NovelistBlazor.Common.Service
 
         public async Task<HttpResponseMessage> NewNovelAsync()
         {
-            var novel = new NovelDTO();
+            var novel = DataFactory.CreateNovelDTO();
             novel.Name = "New novel";
             await SaveNovelAsync(novel);
             return await LoadNovelsAsync();

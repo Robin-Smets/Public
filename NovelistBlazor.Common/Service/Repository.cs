@@ -18,71 +18,12 @@ namespace NovelistBlazor.Common.Service
     {
         #region Properties & members
 
-        private NovelDTO _currentNovel;
-        public NovelDTO? CurrentNovel
-        {
-            get => _currentNovel;
-            set
-            {
-                _currentNovel = value;
-                _eventMediator.NotifyRepositoryDataChanged();
-            }
-        }
-
-        private List<NovelDTO> _allNovels;
-        public List<NovelDTO>? AllNovels
-        {
-            get => _allNovels;
-            set
-            {
-                _allNovels = value;
-                _eventMediator.NotifyRepositoryDataChanged(); 
-            }
-        }
-
-        private CharacterDTO _currentCharacter;
-        public CharacterDTO? CurrentCharacter
-        {
-            get => _currentCharacter;
-            set
-            {
-                _currentCharacter = value;
-                _eventMediator.NotifyRepositoryDataChanged(); 
-            }
-        }
-
-        private List<CharacterDTO> _allCurrentCharacters;
-        public List<CharacterDTO>? AllCurrentCharacters
-        {
-            get => _allCurrentCharacters;
-            set
-            {
-                _allCurrentCharacters = value;
-                _eventMediator.NotifyRepositoryDataChanged(); 
-            }
-        }
-
-        private PlotUnitDTO _currentPlotUnit;
-        public PlotUnitDTO? CurrentPlotUnit
-        {
-            get => _currentPlotUnit;
-            set
-            {
-                _currentPlotUnit = value;
-                _eventMediator.NotifyRepositoryDataChanged(); 
-            }
-        }
-
-        private List<PlotUnitDTO> _allCurrentPlotUnits;
-        public List<PlotUnitDTO>? AllCurrentPlotUnits
-        {
-            get => _allCurrentPlotUnits;
-            set
-            {
-                _allCurrentPlotUnits = value;
-                _eventMediator.NotifyRepositoryDataChanged(); 
-            }
-        }
+        public NovelDTO? CurrentNovel { get; set; }
+        public List<NovelDTO>? AllNovels { get; set; }
+        public CharacterDTO? CurrentCharacter { get; set; }
+        public List<CharacterDTO>? AllCurrentCharacters { get; set; }
+        public PlotUnitDTO? CurrentPlotUnit { get; set; }
+        public List<PlotUnitDTO>? AllCurrentPlotUnits { get; set; }
 
         private PageAnalyzer _pageAnalyzer;
         private NovelRepository _novelRepository;
@@ -103,25 +44,43 @@ namespace NovelistBlazor.Common.Service
             _pageAnalyzer = pageAnalyzer;
             _eventMediator = eventMediator;
             _responseDeserializer = responseDeserializer;
+
+            _eventMediator.OnComponentDataChanged += _eventMediator_OnComponentDataChanged;
         }
+
+        private void _eventMediator_OnComponentDataChanged(RoutedPage page, Dictionary<string, string> data)
+        {
+            if (page == RoutedPage.Novel)
+            {
+                CurrentNovel.Name = data["NovelName"];
+                CurrentNovel.Description = data["NovelDescription"];
+                CurrentNovel.Abstract = data["NovelAbstract"];
+            }
+            else if (page == RoutedPage.Character)
+            {
+                CurrentCharacter.Name = data["CharacterName"];
+                CurrentCharacter.Age = int.Parse(data["CharacterAge"]);
+                CurrentCharacter.Occupation = data["CharacterOccupation"];
+                CurrentCharacter.RoleInStory = data["CharacterRoleInStory"];
+                CurrentCharacter.PhysicalDescription = data["CharacterPhysicalDescription"];
+                CurrentCharacter.PersonalityTraits = data["CharacterPersonalityTraits"];
+                CurrentCharacter.Background = data["CharacterBackground"];
+                CurrentCharacter.GoalsAndMotivations = data["CharacterGoalsAndMotivations"];
+                CurrentCharacter.CharacterArc = data["CharacterCharacterArc"];
+            }
+            else if (page == RoutedPage.Plot)
+            {
+                CurrentPlotUnit.Title = data["PlotUnitTitle"];
+                CurrentPlotUnit.Description = data["PlotUnitDescription"];
+                CurrentPlotUnit.Premise = data["PlotUnitPremise"];
+                CurrentPlotUnit.Location = data["PlotUnitLocation"];
+            }
+        }
+
 
         #endregion
 
         #region Methods
-
-        public async Task LoadNovelsAsync()
-        {
-            var response = await _novelRepository.LoadNovelsAsync();
-
-            if (response != null)
-            {
-                AllNovels = await _responseDeserializer.DeserializeNovelDTOsAsync(response);
-            }
-            
-            CurrentNovel = AllNovels.FirstOrDefault();
-        }
-
-        #endregion
 
         public async Task NewAsync()
         {
@@ -135,39 +94,81 @@ namespace NovelistBlazor.Common.Service
                 }
             
                 CurrentNovel = AllNovels?.OrderByDescending(x => x.Id).FirstOrDefault();
+                await LoadCurrentCharactersAsync();
+                await LoadCurrentPlotUnitsAsync();
+
+                _eventMediator.NotifyRepositoryDataChanged(this);
+
+
             }
-            else if (_pageAnalyzer.GetRoutedPage() == RoutedPage.Character)
+            else if (_pageAnalyzer.GetRoutedPage() == RoutedPage.Character && CurrentNovel is not null)
             {
-                await _characterRepository.NewCharacterAsync();
+                var response = await _characterRepository.NewCharacterAsync(CurrentNovel.Id);
+
+                if (response != null)
+                {
+                    await LoadCurrentCharactersAsync();
+                }
+
+                CurrentCharacter = AllCurrentCharacters?.OrderByDescending(x => x.Id).FirstOrDefault();
+
+                _eventMediator.NotifyRepositoryDataChanged(this);
             }
-            else if (_pageAnalyzer.GetRoutedPage() == RoutedPage.Plot)
+            else if (_pageAnalyzer.GetRoutedPage() == RoutedPage.Plot && CurrentNovel is not null)
             {
-                await _plotUnitRepository.NewPlotUnitAsync();
+                var response = await _plotUnitRepository.NewPlotUnitAsync(CurrentNovel.Id);
+
+                if (response != null)
+                {
+                    await LoadCurrentPlotUnitsAsync();
+                }
+
+                CurrentPlotUnit = AllCurrentPlotUnits?.OrderByDescending(x => x.Id).FirstOrDefault();
+
+                _eventMediator.NotifyRepositoryDataChanged(this);
             }
         }
 
         public async Task SaveAsync()
         {
-            //await _novelRepository.UpdateNovelAsync();
+            if (CurrentNovel is null) return;
+
+            await _novelRepository.UpdateNovelAsync(CurrentNovel);
 
             // Update Characters
-            foreach (var character in _characterRepository.AllCurrentCharacters)
+            foreach (var character in AllCurrentCharacters)
             {
-                _characterRepository.CurrentCharacter = character;
-                await _characterRepository.UpdateCharacterAsync();
+                await _characterRepository.UpdateCharacterAsync(character);
+            }
+            // Update PlotUnits
+            foreach (var plotUnit in AllCurrentPlotUnits)
+            {
+                await _plotUnitRepository.UpdatePlotUnitAsync(plotUnit);
             }
 
-            // Update PlotUnits
-            foreach (var plotUnit in _plotUnitRepository.AllCurrentPlotUnits)
-            {
-                _plotUnitRepository.CurrentPlotUnit = plotUnit;
-                await _plotUnitRepository.UpdatePlotUnitAsync();
-            }
+            _eventMediator.NotifyRepositoryDataChanged(this);
         }
 
-        public async Task LoadNovelAsync(int id)
+        public async Task SetCurrentNovelAsync(int id)
         {
+            CurrentNovel = AllNovels?.FirstOrDefault(x => x.Id == id);
+            AllCurrentCharacters?.Clear();
+            AllCurrentPlotUnits?.Clear();
+            await LoadCurrentCharactersAsync();
+            await LoadCurrentPlotUnitsAsync();
+            _eventMediator.NotifyRepositoryDataChanged(this);
+        }
 
+        public async Task SetCurrentCharacterAsync(int id)
+        {
+            CurrentCharacter = AllCurrentCharacters?.FirstOrDefault(x => x.Id == id);
+            _eventMediator.NotifyRepositoryDataChanged(this);
+        }
+
+        public async Task SetCurrentPlotUnitAsync(int id)
+        {
+            CurrentPlotUnit = AllCurrentPlotUnits?.FirstOrDefault(x => x.Id == id);
+            _eventMediator.NotifyRepositoryDataChanged(this);
         }
 
         public async Task LoadPlotUnitsAsync()
@@ -183,30 +184,65 @@ namespace NovelistBlazor.Common.Service
             {
                 await _novelRepository.DeleteNovelAsync(CurrentNovel.Id);
                 await LoadNovelsAsync();
-                // to force clearing elements of their value even if last delete
-                /*
-                CurrentNovel.Name = string.Empty;
-                CurrentNovel.Description = string.Empty;
-                CurrentNovel.Abstract = string.Empty;
-                */
-                //await _novelRepository.DeleteNovelAsync();
-                //await _novelRepository.LoadNovelsAsync();
-                //_novelRepository.CurrentNovel = _novelRepository.AvaiableNovels.FirstOrDefault();
             }
             if (_pageAnalyzer.GetRoutedPage() == RoutedPage.Character)
             {
-                await _characterRepository.DeleteCharacterAsync();
-                await _characterRepository.LoadCharactersAsync();
-                _characterRepository.CurrentCharacter = _characterRepository.AllCurrentCharacters.FirstOrDefault();
+                await _characterRepository.DeleteCharacterAsync(CurrentCharacter.Id);
+                await LoadCurrentCharactersAsync();
             }
             if (_pageAnalyzer.GetRoutedPage() == RoutedPage.Plot)
             {
-                await _plotUnitRepository.DeletePlotUnitAsync();
-                await _plotUnitRepository.LoadPlotUnitsAsync();
-                _plotUnitRepository.CurrentPlotUnit = _plotUnitRepository.AllCurrentPlotUnits.FirstOrDefault();
+                await _plotUnitRepository.DeletePlotUnitAsync(CurrentPlotUnit.Id);
+                await LoadCurrentPlotUnitsAsync();
             }
 
+            _eventMediator.NotifyRepositoryDataChanged(this);
         }
 
+        public async Task LoadNovelsAsync()
+        {
+            var response = await _novelRepository.LoadNovelsAsync();
+
+            if (response != null)
+            {
+                AllNovels = await _responseDeserializer.DeserializeNovelDTOsAsync(response);
+            }
+            
+            CurrentNovel = AllNovels.FirstOrDefault();
+
+            _eventMediator.NotifyRepositoryDataChanged(this);
+        }
+
+        public async Task LoadCurrentCharactersAsync()
+        {
+            var response = await _characterRepository.LoadCharactersAsync();
+
+            if (response != null)
+            {
+                var characters = await _responseDeserializer.DeserializeCharacterDTOsAsync(response);
+                AllCurrentCharacters =  characters.Where(x => x.NovelId == CurrentNovel.Id).ToList();
+            }
+            
+            CurrentCharacter = AllCurrentCharacters.FirstOrDefault();
+
+            _eventMediator.NotifyRepositoryDataChanged(this);
+        }
+
+        public async Task LoadCurrentPlotUnitsAsync()
+        {
+            var response = await _plotUnitRepository.LoadPlotUnitsAsync();
+
+            if (response != null)
+            {
+                var plotUnits = await _responseDeserializer.DeserializePlotUnitDTOsAsync(response);
+                AllCurrentPlotUnits =  plotUnits.Where(x => x.NovelId == CurrentNovel.Id).ToList();
+            }
+            
+            CurrentPlotUnit = AllCurrentPlotUnits.FirstOrDefault();
+
+            _eventMediator.NotifyRepositoryDataChanged(this);
+        }
+
+        #endregion
     }
 }

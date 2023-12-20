@@ -1,0 +1,12 @@
+﻿@using Microsoft.AspNetCore.Components
+
+<main class="flex-grow">
+    @ChildContent
+</main>
+
+@code 
+{
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}
+

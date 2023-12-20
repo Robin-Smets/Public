@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using NovelistBlazor.Common.DTO;
 
 namespace NovelistBlazor.Common.Service
 {
@@ -9,6 +10,26 @@ namespace NovelistBlazor.Common.Service
         public DataFactory(IMapper mapper)
         {
             _mapper = mapper;
+        }
+
+        public NovelDTO CreateNovelDTO()
+        {
+            return new NovelDTO();
+        }
+
+        public CharacterDTO CreateCharacterDTO()
+        {
+            return new CharacterDTO();
+        }
+
+        public PlotUnitDTO CreatePlotUnitDTO()
+        {
+            return new PlotUnitDTO();
+        }
+
+        public PlotUnitTypeDTO CreatePlotUnitTypeDTO()
+        {
+            return new PlotUnitTypeDTO();
         }
 
         public T CreateEntity<T, TDto>(TDto dto) where T : class where TDto : class

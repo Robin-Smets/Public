@@ -17,6 +17,8 @@
         await base.OnInitializedAsync();
 
         await _repository.LoadNovelsAsync();
+        await _repository.LoadCurrentCharactersAsync();
+        await _repository.LoadCurrentPlotUnitsAsync();
     }
 }
 

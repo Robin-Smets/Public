@@ -1,60 +1,225 @@
 ﻿@page "/character"
 
 @using NovelistBlazor.Common
+@using NovelistBlazor.Common.Interface
 @using NovelistBlazor.Common.Service
 @using NovelistBlazor.PWA.Component
 
+@namespace NovelistBlazor.PWA.Page
+@inherits ComponentBase
+@implements IDisposable
+@implements IDataComponent
+
+@inject EventMediator _eventMediator
 @inject Repository _repository
 
 <PageTitle>Novelist - Character</PageTitle>
 <Container Title="Character">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="name">Name</label>
-        <InputText id="name" @bind-Value="_repository.CurrentCharacter.Name" />
+    <div >
+        <label for="character">Character</label>
+        <ComboBox Type="DTOType.Character"/>
+        <label for="name">Name</label>
+        <InputText id="name" @bind-Value="CharacterName" />
         <!--
         <label class="block text-gray-700 text-sm font-bold mb-2" for="age">Age</label>
         <InputText id="age" @bind-Value="ViewModel.CurrentCharacter.Age" />-->
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="occupation">Occupation</label>
-        <InputText id="occupation" @bind-Value="_repository.CurrentCharacter.Occupation" />
+        <label for="occupation">Occupation</label>
+        <InputText id="occupation" @bind-Value="CharacterOccupation" />
         <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="roleInStory">RoleInStory</label>
-            <EditForm Model="@_repository.CurrentCharacter">
-                <InputTextArea id="roleInStory" @bind-Value="_repository.CurrentCharacter.RoleInStory" />
-            </EditForm>
+            <label for="roleInStory">RoleInStory</label>
+            <InputTextArea id="roleInStory" @bind-Value="CharacterRoleInStory" />
+
         </div>
         <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="physicalDescription">PhysicalDescription</label>
-            <EditForm Model="@_repository.CurrentCharacter">
-                <InputTextArea id="physicalDescription" @bind-Value="_repository.CurrentCharacter.PhysicalDescription" />
-            </EditForm>
+            <label for="physicalDescription">PhysicalDescription</label>
+
+            <InputTextArea id="physicalDescription" @bind-Value="CharacterPhysicalDescription" />
+
         </div>
         <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="personalityTraits">PersonalityTraits</label>
-            <EditForm Model="@_repository.CurrentCharacter">
-                <InputTextArea id="personalityTraits" @bind-Value="_repository.CurrentCharacter.PersonalityTraits" />
-            </EditForm>
+            <label for="personalityTraits">PersonalityTraits</label>
+
+            <InputTextArea id="personalityTraits" @bind-Value="CharacterPersonalityTraits" />
+
         </div>
         <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="background">Background</label>
-            <EditForm Model="@_repository.CurrentCharacter">
-                <InputTextArea id="background" @bind-Value="_repository.CurrentCharacter.Background" />
-            </EditForm>
+            <label for="background">Background</label>
+
+            <InputTextArea id="background" @bind-Value="CharacterBackground" />
         </div>
         <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="goalsAndMotivations">GoalsAndMotivations</label>
-            <EditForm Model="@_repository.CurrentCharacter">
-                <InputTextArea id="goalsAndMotivations" @bind-Value="_repository.CurrentCharacter.GoalsAndMotivations" />
-            </EditForm>
+            <label for="goalsAndMotivations">GoalsAndMotivations</label>
+            <InputTextArea id="goalsAndMotivations" @bind-Value="CharacterGoalsAndMotivations" />
         </div>
         <div>
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="characterArc">CharacterArc</label>
-            <EditForm Model="@_repository.CurrentCharacter">
-                <InputTextArea id="characterArc" @bind-Value="_repository.CurrentCharacter.CharacterArc" />
-            </EditForm>
+            <label for="characterArc">CharacterArc</label>
+
+            <InputTextArea id="characterArc" @bind-Value="CharacterCharacterArc" />
         </div>
     </div>
 </Container>
 
-@code {
+@code 
+{
+    private string _characterName;
+    public string CharacterName
+    {
+        get => _characterName;
+        set
+        {
+            _characterName = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Character, GetComponentData());
+        }
+    }
 
+    private int _characterAge;
+    public int CharacterAge
+    {
+        get => _characterAge;
+        set
+        {
+            _characterAge = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Character, GetComponentData());
+        }
+    }
+
+    private string _characterOccupation;
+    public string CharacterOccupation
+    {
+        get => _characterOccupation;
+        set
+        {
+            _characterOccupation = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Character, GetComponentData());
+        }
+    }
+
+    private string _characterRoleInStory;
+    public string CharacterRoleInStory
+    {
+        get => _characterRoleInStory;
+        set
+        {
+            _characterRoleInStory = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Character, GetComponentData());
+        }
+    }
+
+    private string _characterPhysicalDescription;
+    public string CharacterPhysicalDescription
+    {
+        get => _characterPhysicalDescription;
+        set
+        {
+            _characterPhysicalDescription = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Character, GetComponentData());
+        }
+    }
+
+    private string _characterPersonalityTraits;
+    public string CharacterPersonalityTraits
+    {
+        get => _characterPersonalityTraits;
+        set
+        {
+            _characterPersonalityTraits = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Character, GetComponentData());
+        }
+    }
+
+    private string _characterBackground;
+    public string CharacterBackground
+    {
+        get => _characterBackground;
+        set
+        {
+            _characterBackground = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Character, GetComponentData());
+        }
+    }
+
+    private string _characterGoalsAndMotivations;
+    public string CharacterGoalsAndMotivations
+    {
+        get => _characterGoalsAndMotivations;
+        set
+        {
+            _characterGoalsAndMotivations = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Character, GetComponentData());
+        }
+    }
+
+    private string _characterCharacterArc;
+    public string CharacterCharacterArc
+    {
+        get => _characterCharacterArc;
+        set
+        {
+            _characterCharacterArc = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Character, GetComponentData());
+        }
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _eventMediator.OnRepositoryDataChanged += UpdateComponent;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        UpdateComponent(_repository);
+    }
+
+    private void UpdateComponent(Repository repository)
+    {
+        _characterName = "";
+        _characterAge = 0; // Assuming default age should be 0
+        _characterOccupation = "";
+        _characterRoleInStory = "";
+        _characterPhysicalDescription = "";
+        _characterPersonalityTraits = "";
+        _characterBackground = "";
+        _characterGoalsAndMotivations = "";
+        _characterCharacterArc = "";
+
+        if (repository.CurrentCharacter != null)
+        {
+            // Now pulling data from CurrentCharacter instead of CurrentNovel
+            _characterName = repository.CurrentCharacter.Name;
+            _characterAge = repository.CurrentCharacter.Age;
+            _characterOccupation = repository.CurrentCharacter.Occupation;
+            _characterRoleInStory = repository.CurrentCharacter.RoleInStory;
+            _characterPhysicalDescription = repository.CurrentCharacter.PhysicalDescription;
+            _characterPersonalityTraits = repository.CurrentCharacter.PersonalityTraits;
+            _characterBackground = repository.CurrentCharacter.Background;
+            _characterGoalsAndMotivations = repository.CurrentCharacter.GoalsAndMotivations;
+            _characterCharacterArc = repository.CurrentCharacter.CharacterArc;
+        }
+
+        StateHasChanged();
+    }
+
+
+    public Dictionary<string, string> GetComponentData()
+    {
+        return new Dictionary<string, string>
+        {
+            { "CharacterName", _characterName },
+            { "CharacterAge", _characterAge.ToString() }, // Converting integer to string
+            { "CharacterOccupation", _characterOccupation },
+            { "CharacterRoleInStory", _characterRoleInStory },
+            { "CharacterPhysicalDescription", _characterPhysicalDescription },
+            { "CharacterPersonalityTraits", _characterPersonalityTraits },
+            { "CharacterBackground", _characterBackground },
+            { "CharacterGoalsAndMotivations", _characterGoalsAndMotivations },
+            { "CharacterCharacterArc", _characterCharacterArc }
+        };
+    }
+
+
+    public void Dispose()
+    {
+        _eventMediator.OnRepositoryDataChanged -= UpdateComponent;
+    }
 }

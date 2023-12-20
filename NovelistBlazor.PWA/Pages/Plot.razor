@@ -1,13 +1,169 @@
 ﻿@page "/plot"
 
+@using NovelistBlazor.Common
+@using NovelistBlazor.Common.Interface
+@using NovelistBlazor.Common.Service
 @using NovelistBlazor.PWA.Component
 
+@namespace NovelistBlazor.PWA.Page
+@inherits ComponentBase
+@implements IDisposable
+@implements IDataComponent
+
+@inject EventMediator _eventMediator
+@inject Repository _repository
+
 <PageTitle>Novelist - Plot</PageTitle>
-
 <Container Title="Plot">
+    <div>
+        <label for="plotUnit">PlotUnit</label>
+        <ComboBox Type="DTOType.PlotUnit"/>
+        <label for="title">Title</label>
+        <InputText id="title" @bind-Value="PlotUnitTitle" />
+        <div>
+            <label for="description">Description</label>
+            <InputTextArea id="description" @bind-Value="PlotUnitDescription" />
 
+        </div>
+        <label for="premise">Premise</label>
+        <InputText id="premise" @bind-Value="PlotUnitPremise" />
+        <label for="location">Location</label>
+        <InputText id="location" @bind-Value="PlotUnitLocation" />
+    </div>
 </Container>
 
-@code {
+@code 
+{
+    private int _plotUnitId;
+    public int PlotUnitId
+    {
+        get => _plotUnitId;
+        set
+        {
+            _plotUnitId = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Plot, GetComponentData());
+        }
+    }
+
+    private string _plotUnitTitle;
+    public string PlotUnitTitle
+    {
+        get => _plotUnitTitle;
+        set
+        {
+            _plotUnitTitle = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Plot, GetComponentData());
+        }
+    }
+
+    private string _plotUnitDescription;
+    public string PlotUnitDescription
+    {
+        get => _plotUnitDescription;
+        set
+        {
+            _plotUnitDescription = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Plot, GetComponentData());
+        }
+    }
+
+    private string _plotUnitPremise;
+    public string PlotUnitPremise
+    {
+        get => _plotUnitPremise;
+        set
+        {
+            _plotUnitPremise = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Plot, GetComponentData());
+        }
+    }
+
+    private string _plotUnitLocation;
+    public string PlotUnitLocation
+    {
+        get => _plotUnitLocation;
+        set
+        {
+            _plotUnitLocation = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Plot, GetComponentData());
+        }
+    }
+
+    private int _plotUnitPlotUnitTypeId;
+    public int PlotUnitPlotUnitTypeId
+    {
+        get => _plotUnitPlotUnitTypeId;
+        set
+        {
+            _plotUnitPlotUnitTypeId = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Plot, GetComponentData());
+        }
+    }
+
+    private int _plotUnitNovelId;
+    public int PlotUnitNovelId
+    {
+        get => _plotUnitNovelId;
+        set
+        {
+            _plotUnitNovelId = value;
+            _eventMediator.NotifyComponentDataChanged(RoutedPage.Plot, GetComponentData());
+        }
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _eventMediator.OnRepositoryDataChanged += UpdateComponent;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        UpdateComponent(_repository);
+    }
+
+    private void UpdateComponent(Repository repository)
+    {
+        _plotUnitTitle = "";
+        _plotUnitDescription = "";
+        _plotUnitPremise = "";
+        _plotUnitLocation = "";
+
+        _plotUnitPlotUnitTypeId = 0;
+        _plotUnitNovelId = 0;
+
+        if (_repository.CurrentPlotUnit != null)
+        {
+            _plotUnitTitle = _repository.CurrentPlotUnit.Title;
+            _plotUnitDescription = _repository.CurrentPlotUnit.Description;
+            _plotUnitPremise = _repository.CurrentPlotUnit.Premise;
+            _plotUnitLocation = _repository.CurrentPlotUnit.Location;
+
+            _plotUnitPlotUnitTypeId = _repository.CurrentPlotUnit.PlotUnitTypeId;
+            _plotUnitNovelId = _repository.CurrentPlotUnit.NovelId;
+        }
+
+        StateHasChanged();
+    }
+
+
+    public Dictionary<string, string> GetComponentData()
+    {
+        return new Dictionary<string, string>
+        {
+            { "PlotUnitTitle", _plotUnitTitle },
+            { "PlotUnitDescription", _plotUnitDescription },
+            { "PlotUnitPremise", _plotUnitPremise },
+            { "PlotUnitLocation", _plotUnitLocation },
+            { "PlotUnitPlotUnitTypeId", _plotUnitPlotUnitTypeId.ToString() },
+            { "PlotUnitNovelId", _plotUnitNovelId.ToString() }
+        };
+    }
+
+
+    public void Dispose()
+    {
+        _eventMediator.OnRepositoryDataChanged -= UpdateComponent;
+    }
 
 }

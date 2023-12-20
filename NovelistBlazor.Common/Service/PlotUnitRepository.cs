@@ -13,43 +13,21 @@ namespace NovelistBlazor.Common.Service
 {
     public class PlotUnitRepository : RepositoryBase
     {
-        private PlotUnitDTO _currentPlotUnit;
-        public PlotUnitDTO CurrentPlotUnit 
-        { 
-            get => _currentPlotUnit; 
-            set
-            {
-                if (_currentPlotUnit != value)
-                {
-                    _currentPlotUnit = value;
-                }
-            }
-        }
-        
-        private List<PlotUnitDTO> _allCurrentPlotUnits;
-        public List<PlotUnitDTO> AllCurrentPlotUnits 
-        { 
-            get => _allCurrentPlotUnits; 
-            set
-            {
-                if (_allCurrentPlotUnits != value)
-                {
-                    _allCurrentPlotUnits = value;
-                }
-            }
+
+
+        public PlotUnitRepository(IHttpClientFactory httpClient, ResponseDeserializer responseDeserializer, EventMediator repositoryEventMediator, DataFactory dataFactory) : base(httpClient, responseDeserializer, repositoryEventMediator, dataFactory)
+        {
+
         }
 
-        public PlotUnitRepository(IHttpClientFactory httpClient, ResponseDeserializer responseDeserializer, EventMediator repositoryEventMediator) : base(httpClient, responseDeserializer, repositoryEventMediator)
+        public async Task<HttpResponseMessage> NewPlotUnitAsync(int novelId)
         {
-            _currentPlotUnit = new PlotUnitDTO();
-            _allCurrentPlotUnits = new List<PlotUnitDTO>(); 
-        }
-
-        public async Task NewPlotUnitAsync()
-        {
-                CurrentPlotUnit = new PlotUnitDTO();
-                await SavePlotUnitAsync(CurrentPlotUnit);
-                await LoadPlotUnitsAsync();
+            var plotUnit = DataFactory.CreatePlotUnitDTO();
+            plotUnit.Title = "New plot unit";
+            plotUnit.NovelId = novelId;
+            plotUnit.PlotUnitTypeId = 1;
+            await SavePlotUnitAsync(plotUnit);
+            return await LoadPlotUnitsAsync();
         }
 
         public async Task<HttpResponseMessage> SavePlotUnitAsync(PlotUnitDTO plotUnitDTO)
@@ -68,9 +46,9 @@ namespace NovelistBlazor.Common.Service
             return await SendRequest(HttpClient, request);
         }
 
-        public async Task<HttpResponseMessage> DeletePlotUnitAsync()
+        public async Task<HttpResponseMessage> DeletePlotUnitAsync(int id)
         {
-            var request = new HttpRequestMessage(HttpMethod.Delete, $"https://localhost:7173/PlotUnit/{CurrentPlotUnit.Id}")
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"https://localhost:7173/PlotUnit/{id}")
             {
                 Method = HttpMethod.Delete,
             };
@@ -91,25 +69,21 @@ namespace NovelistBlazor.Common.Service
 
             var response = await SendRequest(HttpClient, request);
 
-            var plotUnits = await ResponseDeserializer.DeserializePlotUnitDTOsAsync(response);
-
-            AllCurrentPlotUnits = plotUnits;
-
             return response;
         }
 
 
-        public async Task<HttpResponseMessage> UpdatePlotUnitAsync()
+        public async Task<HttpResponseMessage> UpdatePlotUnitAsync(PlotUnitDTO plotUnit)
         {
             var plotUnitData = new
             {
-                Id = CurrentPlotUnit.Id,
-                Title = CurrentPlotUnit.Title,
-                Description = CurrentPlotUnit.Description,
-                Premise = CurrentPlotUnit.Premise,
-                Location = CurrentPlotUnit.Location,
-                PlotUnitTypeId = CurrentPlotUnit.PlotUnitTypeId,
-                NovelId = CurrentPlotUnit.NovelId
+                Id = plotUnit.Id,
+                Title = plotUnit.Title,
+                Description = plotUnit.Description,
+                Premise = plotUnit.Premise,
+                Location = plotUnit.Location,
+                PlotUnitTypeId = plotUnit.PlotUnitTypeId,
+                NovelId = plotUnit.NovelId
             };
 
             var jsonPlotUnitData = JsonConvert.SerializeObject(plotUnitData);
@@ -125,5 +99,7 @@ namespace NovelistBlazor.Common.Service
             
             return await SendRequest(HttpClient, request);
         }
+
+
     }
 }

@@ -1,0 +1,12 @@
+﻿<div class="flex flex-row m-4">
+    @ChildContent
+    <div class="ps-4">@Text</div>
+</div>
+
+@code 
+{
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public string Text { get; set; }
+}

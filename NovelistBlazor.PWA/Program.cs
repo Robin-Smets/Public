@@ -33,7 +33,6 @@ builder.Services.AddSingleton(_ => mapper);
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddSingleton<AppState>();
 builder.Services.AddSingleton<PageAnalyzer>();
 builder.Services.AddSingleton<EventMediator>();
 builder.Services.AddSingleton<DataFactory>();

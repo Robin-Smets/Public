@@ -9,9 +9,9 @@ namespace NovelistBlazor.Common.Model
 
         public PlotUnitType()
         {
-            Id = 0;
+            Id = 1;
 
-            Name = "Default Name";
+            Name = "Free Hand Plot";
         }
     }
 }

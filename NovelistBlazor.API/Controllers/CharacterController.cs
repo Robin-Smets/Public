@@ -48,6 +48,7 @@ namespace NovelistBlazor.API.Controllers
         public async Task<ActionResult<CharacterDTO>> PostCharacter(CharacterDTO characterDTO)
         {
             var character = _dataFactory.CreateEntity<Character, CharacterDTO>(characterDTO);
+            character.NovelId = characterDTO.NovelId;
             _context.Set<Character>().Add(character);
             await _context.SaveChangesAsync();
 

@@ -12,43 +12,20 @@ namespace NovelistBlazor.Common.Service
 {
     public class CharacterRepository : RepositoryBase
     {
-        private CharacterDTO _currentCharacter;
-        public CharacterDTO CurrentCharacter 
-        { 
-            get => _currentCharacter; 
-            set
-            {
-                if (_currentCharacter != value)
-                {
-                    _currentCharacter = value;
-                }
-            }
-        }
-        
-        private List<CharacterDTO> _allCurrentCharacters;
-        public List<CharacterDTO> AllCurrentCharacters 
-        { 
-            get => _allCurrentCharacters; 
-            set
-            {
-                if (_allCurrentCharacters != value)
-                {
-                    _allCurrentCharacters = value;
-                }
-            }
+
+
+        public CharacterRepository(IHttpClientFactory httpClient, ResponseDeserializer responseDeserializer, EventMediator repositoryEventMediator, DataFactory dataFactory) : base(httpClient, responseDeserializer, repositoryEventMediator, dataFactory)
+        {
+
         }
 
-        public CharacterRepository(IHttpClientFactory httpClient, ResponseDeserializer responseDeserializer, EventMediator repositoryEventMediator) : base(httpClient, responseDeserializer, repositoryEventMediator)
+        public async Task<HttpResponseMessage> NewCharacterAsync(int novelId)
         {
-            _currentCharacter = new CharacterDTO();
-            _allCurrentCharacters = new List<CharacterDTO>(); 
-        }
-
-        public async Task NewCharacterAsync()
-        {
-                CurrentCharacter = new CharacterDTO();
-                await SaveCharacterAsync(CurrentCharacter);
-                await LoadCharactersAsync();
+            var character = DataFactory.CreateCharacterDTO();
+            character.Name = "New Character";
+            character.NovelId = novelId;
+            await SaveCharacterAsync(character);
+            return await LoadCharactersAsync();
         }
 
         public async Task<HttpResponseMessage> SaveCharacterAsync(CharacterDTO characterDTO)
@@ -67,9 +44,9 @@ namespace NovelistBlazor.Common.Service
             return await SendRequest(HttpClient, request);
         }
 
-        public async Task<HttpResponseMessage> DeleteCharacterAsync()
+        public async Task<HttpResponseMessage> DeleteCharacterAsync(int id)
         {
-            var request = new HttpRequestMessage(HttpMethod.Delete, $"https://localhost:7173/Character/{CurrentCharacter.Id}")
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"https://localhost:7173/Character/{id}")
             {
                 Method = HttpMethod.Delete,
             };
@@ -90,28 +67,24 @@ namespace NovelistBlazor.Common.Service
 
             var response = await SendRequest(HttpClient, request);
 
-            var characters = await ResponseDeserializer.DeserializeCharacterDTOsAsync(response);
-
-            AllCurrentCharacters = characters;
-
             return response;
         }
 
 
-        public async Task<HttpResponseMessage> UpdateCharacterAsync()
+        public async Task<HttpResponseMessage> UpdateCharacterAsync(CharacterDTO character)
         {
             var characterData = new
             {
-                Id = CurrentCharacter.Id,
-                Name = CurrentCharacter.Name,
-                Occupation = CurrentCharacter.Occupation,
-                RoleInStory = CurrentCharacter.RoleInStory,
-                PhysicalDescription = CurrentCharacter.PhysicalDescription,
-                PersonalityTraits = CurrentCharacter.PersonalityTraits,
-                Background = CurrentCharacter.Background,
-                GoalsAndMotivations = CurrentCharacter.GoalsAndMotivations,
-                CharacterArc = CurrentCharacter.CharacterArc,
-                NovelId = CurrentCharacter.NovelId
+                Id = character.Id,
+                Name = character.Name,
+                Occupation = character.Occupation,
+                RoleInStory = character.RoleInStory,
+                PhysicalDescription = character.PhysicalDescription,
+                PersonalityTraits = character.PersonalityTraits,
+                Background = character.Background,
+                GoalsAndMotivations = character.GoalsAndMotivations,
+                CharacterArc = character.CharacterArc,
+                NovelId = character.NovelId
             };
 
             var jsonNovelData = JsonConvert.SerializeObject(characterData);
@@ -121,7 +94,7 @@ namespace NovelistBlazor.Common.Service
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Put,
-                RequestUri = new Uri($"https://localhost:7173/Novel/{characterData.Id}"),
+                RequestUri = new Uri($"https://localhost:7173/Character/{characterData.Id}"),
                 Content = httpContent,
             };
             

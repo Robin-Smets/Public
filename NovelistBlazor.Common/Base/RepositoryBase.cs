@@ -12,12 +12,14 @@ namespace NovelistBlazor.Common.Base
         public HttpClient HttpClient { get; set;}
         public ResponseDeserializer ResponseDeserializer { get; set;}
         public EventMediator RepositoryEventMediator { get; set;} 
+        public DataFactory DataFactory { get; set;}
 
-        public RepositoryBase(IHttpClientFactory httpClient, ResponseDeserializer responseDeserializer, EventMediator repositoryEventMediator)
+        public RepositoryBase(IHttpClientFactory httpClient, ResponseDeserializer responseDeserializer, EventMediator repositoryEventMediator, DataFactory dataFactory)
         {
             HttpClient = httpClient.CreateClient();
             ResponseDeserializer = responseDeserializer;
             RepositoryEventMediator = repositoryEventMediator;
+            DataFactory = dataFactory;
         }
 
         protected async Task<HttpResponseMessage> SendRequest(HttpClient httpClient, HttpRequestMessage request)

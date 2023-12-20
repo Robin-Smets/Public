@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace NovelistBlazor.Common.Interface
 {
-    public interface IDTO
+    public interface IDataComponent
     {
-
+        Dictionary<string, string> GetComponentData();
     }
 }

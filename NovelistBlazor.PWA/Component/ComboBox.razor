@@ -7,7 +7,7 @@
 @inject Repository _repository
 @inject EventMediator _eventMediator;
 
-<select @onchange="OnSelectionChanged">
+<select @onchange="OnSelectionChanged" class="rounded-lg text-black">
     @if (Type == DTOType.Novel)
     {
         if (_repository.AllNovels?.Count() > 0)
@@ -49,29 +49,35 @@
 
     private async Task OnSelectionChanged(ChangeEventArgs e)
     {
-        selectedId = Convert.ToInt32(e.Value.ToString());
+        var id = Convert.ToInt32(e.Value.ToString());
 
         if (Type == DTOType.Novel)
         {
-            await _repository.LoadNovelAsync(selectedId);
+            await _repository.SetCurrentNovelAsync(id);
         }
-
+        else if (Type == DTOType.Character)
+        {
+            await _repository.SetCurrentCharacterAsync(id);
+        }
+        else if (Type == DTOType.PlotUnit)
+        {
+            await _repository.SetCurrentPlotUnitAsync(id);
+        }
     }
 
-    private void UpdateAsync()
+    private void UpdateComponent(Repository repository)
     {
-        selectedId = _repository.CurrentNovel?.Id ?? 0;
+        selectedId = repository.CurrentNovel?.Id ?? 0;
         StateHasChanged();
     }
 
     protected async override Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
-        _eventMediator.OnRepositoryDataChanged += UpdateAsync;
+        _eventMediator.OnRepositoryDataChanged += UpdateComponent;
     }
 
     public void Dispose()
     {
-        _eventMediator.OnRepositoryDataChanged -= UpdateAsync;
+        _eventMediator.OnRepositoryDataChanged -= UpdateComponent;
     }
 }

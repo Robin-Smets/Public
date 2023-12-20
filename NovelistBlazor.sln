@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NovelistBlazor.Common", "No
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NovelistBlazor.PWA", "NovelistBlazor.PWA\NovelistBlazor.PWA.csproj", "{997D5ABA-AC17-457A-95BB-2B492F397265}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovelistBlazor.UnitTest", "NovelistBlazor.UnitTest\NovelistBlazor.UnitTest.csproj", "{3F674D7B-CEA7-4D52-BCC3-8ED15E7BBB74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NovelistBlazor.UnitTest", "NovelistBlazor.UnitTest\NovelistBlazor.UnitTest.csproj", "{3F674D7B-CEA7-4D52-BCC3-8ED15E7BBB74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
